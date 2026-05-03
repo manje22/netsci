@@ -139,19 +139,24 @@ def generate_degree_distributions():
     # Compute histograms with density=True for proper probability comparison
     ba_hist, ba_edges = np.histogram(ba_degrees, bins=bins, density=True)
     er_hist, er_edges = np.histogram(er_degrees, bins=bins, density=True)
-    ws_hist, ws_edges = np.histogram(ws_degrees, bins=bins, density=True)
 
     # Get bin centers for plotting
     ba_centers = (ba_edges[1:] + ba_edges[:-1]) / 2
     er_centers = (er_edges[1:] + er_edges[:-1]) / 2
-    ws_centers = (ws_edges[1:] + ws_edges[:-1]) / 2
+
+    # For WS (nearly regular graph), log-spaced bins produce erratic results.
+    # Compute P(k) per unique degree value instead.
+    from collections import Counter
+    ws_counts = Counter(ws_degrees)
+    ws_k = sorted(ws_counts.keys())
+    ws_p = [ws_counts[k] / len(ws_degrees) for k in ws_k]
 
     # Create log-log plots with larger markers and clear lines
     ax.loglog(ba_centers, ba_hist, 'o-', color='#3274A1', linewidth=2,
               markersize=8, label='BA (Scale-Free)')
     ax.loglog(er_centers, er_hist, 'o-', color='#E1812C', linewidth=2,
               markersize=8, label='ER (Random)')
-    ax.loglog(ws_centers, ws_hist, 'o-', color='#3A923A', linewidth=2,
+    ax.loglog(ws_k, ws_p, 'o-', color='#3A923A', linewidth=2,
               markersize=8, label='WS (Small-World)')
 
     # Draw a reference power-law line
@@ -176,7 +181,7 @@ def generate_degree_distributions():
     ax.legend(fontsize=12, loc='lower left')
 
     # Add text annotation explaining power-law
-    ax.text(0.65, 0.95, 'Power-law distribution:\nP(k) ~ k$^{-\\alpha}$',
+    ax.text(0.65, 0.95, 'Power-law distribution:\nP(k) $\\propto$ k$^{-\\alpha}$',
             transform=ax.transAxes, fontsize=12,
             bbox=dict(facecolor='white', alpha=0.8, boxstyle='round,pad=0.5'))
 
