@@ -35,6 +35,17 @@ These properties are observed in many real-world networks!
 
 ---
 
+## What Does "Scale-Free" Mean?
+
+In many networks, the average degree gives a useful sense of a typical node.
+
+In a scale-free network, that typical scale is weak:
+- most nodes have only a few links
+- a few hubs have far more links than average
+- the same pattern appears across small and large degrees
+
+---
+
 ## Power-Law Degree Distribution
 
 Unlike random networks (Poisson distribution) or small-world networks (peaked near average), scale-free networks have a heavy-tailed degree distribution
@@ -65,8 +76,8 @@ $$P(k) \sim k^{-\alpha}$$
 
 - **Mathematical properties:**
   - The probability of finding a node with degree $k$ decreases as $k^{-\alpha}$
-  - Heavy-tailed distribution: Small probability of extremely high values
-  - Scale invariance: The shape looks the same at different scales
+  - Heavy-tailed distribution: Hubs are rare, but not negligible
+  - Scale invariance: Zooming in or out keeps a similar shape
 
 ![width:600px bg right](images/power_law_distribution.png)
 
@@ -265,18 +276,6 @@ R, p = fit.distribution_compare('power_law', 'exponential')
 ## Real-World Scale-Free Networks
 
 ![width:800px bg right:70%](images/real_world_examples.png)
-
----
-
-## Examples in Various Domains
-
-- **Internet:** Routers and connections
-- **World Wide Web:** Websites and hyperlinks
-- **Social Networks:** Twitter followers, scientific collaborations
-- **Biological Networks:** Protein interactions, metabolic networks
-- **Transportation:** Airline routes
-- **Citation Networks:** Scientific papers and citations
-- **Economic Networks:** Trade relationships, financial transactions
 
 ---
 
