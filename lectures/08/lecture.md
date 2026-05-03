@@ -37,12 +37,14 @@ These properties are observed in many real-world networks!
 
 ## What Does "Scale-Free" Mean?
 
-In many networks, the average degree gives a useful sense of a typical node.
+Scale-free means **free of one characteristic scale**.
 
-In a scale-free network, that typical scale is weak:
-- most nodes have only a few links
-- a few hubs have far more links than average
-- the same pattern appears across small and large degrees
+In many networks, the average degree describes a typical node fairly well.
+
+In a scale-free network, it does not:
+- most nodes have few links
+- a few hubs sit far above average
+- the degree pattern looks similar when we zoom in or out
 
 ---
 
@@ -53,6 +55,7 @@ Unlike random networks (Poisson distribution) or small-world networks (peaked ne
 ![width:900px bg right:70%](images/degree_distributions.png)
 
 The BA curve decays slowly: many low-degree nodes, a few high-degree hubs.
+On log-log axes, a power law appears roughly as a straight descending line.
 
 ---
 
@@ -73,6 +76,8 @@ The degree distribution of scale-free networks shows a characteristic pattern:
 Power-law distribution:
 
 $$P(k) \sim k^{-\alpha}$$
+
+Here, $k$ is node degree, $P(k)$ is the probability of degree $k$, and $\alpha$ controls how fast the tail decays.
 
 - **Mathematical properties:**
   - The probability of finding a node with degree $k$ decreases as $k^{-\alpha}$
@@ -105,6 +110,8 @@ Two key mechanisms:
 4. Probability of connecting to node i is proportional to its degree:
 
    $$P(i) = \frac{k_i}{\sum_j k_j}$$
+
+   Here, $k_i$ is the degree of node $i$.
 
 5. Repeat until desired network size is reached
 
@@ -170,6 +177,8 @@ Note the presence of highly connected hubs (brighter colors)
 ## Mathematical Properties of BA Networks
 
 For the Barabási-Albert model:
+
+Here, $N$ is the number of nodes, $k$ is node degree, and $C$ is average clustering.
 
 - **Degree distribution:**
   $$P(k) \sim k^{-3}$$
@@ -322,7 +331,7 @@ G_plc = nx.powerlaw_cluster_graph(n=1000, m=2, p=0.1, seed=42)
 2. They form through **growth** and **preferential attachment**
 3. They contain **hubs** that connect many other nodes
 4. They are **robust against random failures** but **vulnerable to targeted attacks**
-5. Many **real-world networks** exhibit scale-free properties
+5. Some **real-world networks** show scale-free-like degree patterns
 6. Understanding scale-free structure helps design **more resilient systems**
 
 ---
