@@ -109,19 +109,24 @@ Two key mechanisms:
 import networkx as nx
 import matplotlib.pyplot as plt
 import numpy as np
+from collections import Counter
 
 # Parameters
 n = 1000  # Number of nodes
 m = 2     # Number of edges to attach from a new node
 
 # Generate scale-free network
-G = nx.barabasi_albert_graph(n, m)
+G = nx.barabasi_albert_graph(n, m, seed=42)
 
 # Calculate degree distribution
 degrees = [d for _, d in G.degree()]
-bins = np.logspace(0, np.log10(max(degrees)), 30)
-plt.hist(degrees, bins=bins, log=True)
+degree_counts = Counter(degrees)
+k = np.array(sorted(degree_counts))
+counts = np.array([degree_counts[degree] for degree in k])
+
+plt.scatter(k, counts)
 plt.xscale('log')
+plt.yscale('log')
 plt.xlabel('Degree (log scale)')
 plt.ylabel('Count (log scale)')
 plt.title('Degree Distribution of BA Network')
@@ -136,7 +141,7 @@ plt.show()
 
 As m increases:
 - Network becomes more densely connected
-- Minimum degree increases, but the power-law exponent remains α = 3
+- Each new node enters with more edges, but the power-law exponent remains α = 3
 - Hubs become less pronounced relative to other nodes
 
 ---
@@ -255,7 +260,8 @@ How to determine if a network is scale-free:
 ```python
 import powerlaw
 # Fit power law to degree distribution
-fit = powerlaw.Fit(degrees)
+positive_degrees = [degree for degree in degrees if degree > 0]
+fit = powerlaw.Fit(positive_degrees, discrete=True)
 print(f"Power law exponent: {fit.alpha}")
 # Compare with alternative distributions
 R, p = fit.distribution_compare('power_law', 'exponential')
@@ -294,7 +300,8 @@ R, p = fit.distribution_compare('power_law', 'exponential')
 ```python
 # Fitting and testing power-law distributions
 import powerlaw
-fit = powerlaw.Fit(degrees)
+positive_degrees = [degree for degree in degrees if degree > 0]
+fit = powerlaw.Fit(positive_degrees, discrete=True)
 print(f"Alpha: {fit.alpha}, xmin: {fit.xmin}")
 print(f"Goodness of fit: {fit.power_law.KS()}")
 
@@ -303,8 +310,8 @@ R, p = fit.distribution_compare('power_law', 'exponential')
 print(f"Log-likelihood ratio: {R}, p-value: {p}")
 
 # Creating scale-free networks with NetworkX
-G_ba = nx.barabasi_albert_graph(n=1000, m=2)
-G_plc = nx.powerlaw_cluster_graph(n=1000, m=2, p=0.1)
+G_ba = nx.barabasi_albert_graph(n=1000, m=2, seed=42)
+G_plc = nx.powerlaw_cluster_graph(n=1000, m=2, p=0.1, seed=42)
 ```
 
 ---
