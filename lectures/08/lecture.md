@@ -37,7 +37,7 @@ These properties are observed in many real-world networks!
 
 ## Power-Law Degree Distribution
 
-Unlike random networks (Poisson distribution) or small-world networks (peaked near average)
+Unlike random networks (Poisson distribution) or small-world networks (peaked near average), scale-free networks have a heavy-tailed degree distribution
 
 ![width:900px bg right:70%](images/degree_distributions.png)
 
@@ -62,8 +62,7 @@ Power-law distribution:
 $$P(k) \sim k^{-\alpha}$$
 
 - **Mathematical properties:**
-  - The probability of finding a node with degree k decreases as
-- $$k^{-\alpha}$$
+  - The probability of finding a node with degree $k$ decreases as $k^{-\alpha}$
   - Heavy-tailed distribution: Small probability of extremely high values
   - Scale invariance: The shape looks the same at different scales
 
@@ -109,6 +108,7 @@ Two key mechanisms:
 ```python
 import networkx as nx
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Parameters
 n = 1000  # Number of nodes
@@ -119,8 +119,10 @@ G = nx.barabasi_albert_graph(n, m)
 
 # Calculate degree distribution
 degrees = [d for _, d in G.degree()]
-plt.hist(degrees, bins=30, log=True)
-plt.xlabel('Degree')
+bins = np.logspace(0, np.log10(max(degrees)), 30)
+plt.hist(degrees, bins=bins, log=True)
+plt.xscale('log')
+plt.xlabel('Degree (log scale)')
 plt.ylabel('Count (log scale)')
 plt.title('Degree Distribution of BA Network')
 plt.show()
@@ -134,7 +136,7 @@ plt.show()
 
 As m increases:
 - Network becomes more densely connected
-- Power-law exponent decreases
+- Minimum degree increases, but the power-law exponent remains α = 3
 - Hubs become less pronounced relative to other nodes
 
 ---
@@ -158,7 +160,7 @@ For the Barabási-Albert model:
 - **Clustering coefficient:**
   $$C \sim N^{-0.75}$$
 
-Unlike small-world networks, clustering is lower but still higher than random networks.
+Unlike small-world networks, clustering is lower and decays with N, though it remains higher than an equivalent ER random graph for moderate network sizes.
 
 ---
 
@@ -224,6 +226,8 @@ Scale-free networks exhibit:
 - **Economic Networks:** Trade relationships, financial transactions
 
 ---
+
+## Network Model Comparison
 
 ![width:1200px bg](images/network_comparison_table.png)
 
@@ -299,8 +303,8 @@ R, p = fit.distribution_compare('power_law', 'exponential')
 print(f"Log-likelihood ratio: {R}, p-value: {p}")
 
 # Creating scale-free networks with NetworkX
-G = nx.barabasi_albert_graph(n=1000, m=2)
-G = nx.powerlaw_cluster_graph(n=1000, m=2, p=0.1)
+G_ba = nx.barabasi_albert_graph(n=1000, m=2)
+G_plc = nx.powerlaw_cluster_graph(n=1000, m=2, p=0.1)
 ```
 
 ---

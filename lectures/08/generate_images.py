@@ -699,25 +699,41 @@ def generate_linear_scale_distribution():
     # Create the inset axes
     axins = ax.inset_axes([0.5, 0.5, 0.45, 0.45])
 
-    # Filter degrees to show only the higher values (e.g., above 95th percentile)
-    high_degree_threshold = np.percentile(degrees, 95)
-    high_degrees = [d for d in degrees if d >= high_degree_threshold]
+    # Zoom into the extreme tail: last portion of the degree range
+    max_degree = max(degrees)
+    zoom_xmin = int(max_degree * 0.6)
+    zoom_xmax = max_degree + max_degree * 0.05
 
-    # Plot the high degree distribution in the inset
+    # Filter degrees to the zoom range
+    high_degrees = [d for d in degrees if d >= zoom_xmin]
+
+    # Use narrow bins so individual hub nodes are visible
+    zoom_bins = np.arange(zoom_xmin, zoom_xmax + 1, 1)
+
     axins.hist(
         high_degrees,
-        bins=30,
+        bins=zoom_bins,
         alpha=0.8,
         color='salmon',
         edgecolor='black',
         linewidth=0.5
     )
 
+    axins.set_xlim(zoom_xmin, zoom_xmax)
+
     # Add title and labels to inset
-    axins.set_title('Zoom on High-Degree Nodes (Hubs)', fontsize=10)
+    axins.set_title('Zoom: Hub Nodes (High Degree)', fontsize=10)
     axins.set_xlabel('Degree', fontsize=8)
     axins.set_ylabel('Count', fontsize=8)
     axins.tick_params(labelsize=8)
+
+    # Draw a rectangle on the main plot indicating the zoomed region
+    from matplotlib.patches import Rectangle
+    rect = Rectangle(
+        (zoom_xmin, 0), zoom_xmax - zoom_xmin, max(counts) * 0.5,
+        linewidth=1.5, edgecolor='red', facecolor='none', linestyle='--'
+    )
+    ax.add_patch(rect)
 
     # Main plot styling
     ax.set_xlabel('Degree (k)', fontsize=14)
@@ -735,7 +751,6 @@ def generate_linear_scale_distribution():
     )
 
     # Draw an arrow pointing to the tail
-    max_degree = max(degrees)
     max_bin_height = max(counts)
     ax.annotate(
         'Power-law tail:\nHubs with many connections',
